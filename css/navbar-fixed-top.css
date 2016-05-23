@@ -1,0 +1,27 @@
+body {
+    min-height: 2000px;
+    padding-top: 70px;
+    background-image: url("../pic/background.png");
+    background-repeat: repeat-x;
+    color: black;
+}
+
+.navbar-default .navbar-collapse, .navbar-default .navbar-form {
+    border-color: #2b669a;
+    color: black;
+}
+
+.navbar-default {
+    background-color: #2b669a;
+    border-color: #2b669a;
+    color: black;
+
+}
+
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
+    color: black;
+    background-color: #2b669a;
+}
+.navbar-default .navbar-brand {
+    color: black;
+}
