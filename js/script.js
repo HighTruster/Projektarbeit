@@ -119,7 +119,9 @@ function klasseSelected(datum) {
     $('#deleteCookie').removeClass("hidden");
     $('#kalender_head').html('Scheduler from the class - ' + $("#klasse>option:selected").html());
     loadKalender(datum);
+
     $('#filter_body').hide();
+
 }
 
 function loadKalender(datum) {
@@ -227,6 +229,7 @@ function loadKalender(datum) {
             }
         });
         $('#calendar').fullCalendar('refetchEvents');
+
     } else {
         //console.log(false);
         $('#calendar_panel').hide();
