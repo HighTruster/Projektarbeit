@@ -7,24 +7,21 @@
  * and show this for every person, that has access to the link or URL.
  */
 //Cookie laden
-var speicherKekse = document.cookie.split('; ');
-var kekse = new Array(null,null);
-
-$.each(speicherKekse,function(k,speicherKeks){
+var coockiesSafe = document.cookie.split('; ');
+var coockies = new Array(null, null);
+$.each(coockiesSafe, function (k, speicherKeks) {
     var keks = speicherKeks.split('=');
-    switch(keks[0]){
+    switch (keks[0]) {
         case 'beruf_id':
-            kekse[0] = keks[1];
+            coockies[0] = keks[1];
             break;
         case 'klasse_id':
-            kekse[1] = keks[1];
+            coockies[1] = keks[1];
             break;
     }
 });
-
-console.log('KEKS0: '+kekse[0]);
-
-if(kekse[0] !== null && kekse[0] != "null"){
+console.log('KEKS0: ' + coockies[0]);
+if (coockies[0] !== null && coockies[0] != "null") {
     $('#deleteCookie').removeClass("hidden");
 }
 function loadBerufe() {
@@ -57,8 +54,8 @@ function loadBerufe() {
         });
         $('#beruf').show();
         $('#beruf_loading').hide();
-        if (!isNaN(kekse[0])) {
-            $('#beruf').val(kekse[0]);
+        if (!isNaN(coockies[0])) {
+            $('#beruf').val(coockies[0]);
             loadKlassen();
         }
     });
@@ -67,7 +64,7 @@ function loadKlassen() {
     var changeBeruf = false;
     var klasse_id, klasse_name;
     var id = $('#beruf').val();
-    if (isNaN(kekse[0]) || kekse[0] != id) {
+    if (isNaN(coockies[0]) || coockies[0] != id) {
         document.cookie = 'klasse_id=';
         $('#klasse').empty();
         $('#klasse').hide();
@@ -106,8 +103,8 @@ function loadKlassen() {
             });
             $('#klasse_loading').hide();
             $('#klasse').show();
-            if (!isNaN(kekse[1]) && !changeBeruf) {
-                $('#klasse').val(kekse[1]);
+            if (!isNaN(coockies[1]) && !changeBeruf) {
+                $('#klasse').val(coockies[1]);
                 klasseSelected(null);
             }
         });
@@ -117,52 +114,50 @@ function loadKlassen() {
         $('#klasse_div').hide();
     }
 }
-function showScheduler() {
-    var date, weekday, time_von, zeit_bis, lehrer, fach, raum, kommentar, timeDiff, calTitle;
-}
-
-function klasseSelected(datum){
-    document.cookie="klasse_id="+$('#klasse').val();
+function klasseSelected(datum) {
+    document.cookie = "klasse_id=" + $('#klasse').val();
     $('#deleteCookie').removeClass("hidden");
-    $('#kalender_head').html('Scheduler from the class - '+$("#klasse>option:selected").html());
+    $('#kalender_head').html('Scheduler from the class - ' + $("#klasse>option:selected").html());
     loadKalender(datum);
     $('#filter_body').hide();
 }
 
-function loadKalender(datum){
-    var date, weekday, time_from, time_until, teacher, subject, place, coment, timeDiff, SchedulerTitle;
+function loadKalender(datum) {
+    var datum, wochentag, zeit_von, zeit_bis, lehrer, fach, raum, kommentar, timeDiff, calTitle;
 
-    if($('#klasse').val() >= 0 && $('#klasse').val() != ""){
+    if ($('#klasse').val() >= 0 && $('#klasse').val() != "") {
         $('#calendar_panel').show();
         $('#calendar').fullCalendar({
+            // put your options and callbacks here
             lang: 'en',
             header: false,
-            events: function(start, end, timezone, callback) {
+            events: function (start, end, timezone, callback) {
                 $.ajax({
                     url: 'http://home.gibm.ch/interfaces/133/tafel.php',
                     dataType: 'jsonp',
                     data: {
-                        klasse_id: $('#class').val(),
-                        woche: start.isoWeek()+'-'+start.year()
+                        klasse_id: $('#klasse').val(),
+                        woche: start.isoWeek() + '-' + start.year()
                     },
-                    success: function(response) {
+                    success: function (response) {
                         var events = [];
-                        $.each(response,function(i,j){
-                            date = null;
-                            weekday = null;
-                            time_from = null;
-                            time_until = null;
-                            teacher = null;
-                            subject = null;
-                            place = null;
-                            coment = null;
+                        $.each(response, function (i, j) {
+                            datum = null;
+                            wochentag = null;
+                            zeit_von = null;
+                            zeit_bis = null;
+                            lehrer = null;
+                            fach = null;
+                            raum = null;
+                            kommentar = null;
                             timeDiff = null;
 
-                            $.each(j,function(k,l){
-                                $.each(l,function(key,val){
-                                    switch(key){
+                            // Daten verarbeiten
+                            $.each(j, function (k, l) {
+                                $.each(l, function (key, val) {
+                                    switch (key) {
                                         case 'tafel_datum':
-                                            date = val;
+                                            datum = val;
                                             break;
 
                                         case 'tafel_wochentag':
@@ -170,38 +165,38 @@ function loadKalender(datum){
                                             break;
 
                                         case 'tafel_von':
-                                            time_from = val;
+                                            zeit_von = val;
                                             break;
 
                                         case 'tafel_bis':
-                                            time_until = val;
+                                            zeit_bis = val;
                                             break;
 
                                         case 'tafel_lehrer':
-                                            teacher = val;
+                                            lehrer = val;
                                             break;
 
                                         case 'tafel_longfach':
-                                            subject = val;
+                                            fach = val;
                                             break;
 
                                         case 'tafel_raum':
-                                            place = val;
+                                            raum = val;
                                             break;
 
                                         case 'tafel_kommentar':
-                                            coment = val;
+                                            kommentar = val;
                                             break;
                                     }
                                 });
 
-                                timeDiff = Math.abs(new Date("01/01/1970 " + time_from).getTime()/1000/60 - new Date("01/01/1970 " + time_until).getTime()/1000/60);
+                                timeDiff = Math.abs(new Date("01/01/1970 " + zeit_von).getTime() / 1000 / 60 - new Date("01/01/1970 " + zeit_bis).getTime() / 1000 / 60);
 
                                 events.push({
-                                    title: subject+(timeDiff > 45 ? "\r\n"+teacher+"\r\n"+place : ""),
-                                    start: date+"T"+time_from,
-                                    end: date+"T"+time_until,
-                                    description: subject+"<br />"+teacher+"<br />"+place+(coment != "" ? "<br /><br /><em>"+coment+"</em>" : "")
+                                    title: fach + (timeDiff > 45 ? "\r\n" + lehrer + "\r\n" + raum : ""),
+                                    start: datum + "T" + zeit_von,
+                                    end: datum + "T" + zeit_bis,
+                                    description: fach + "<br />" + lehrer + "<br />" + raum + (kommentar != "" ? "<br /><br /><em>" + kommentar + "</em>" : "")
                                 });
                             });
                         });
@@ -218,7 +213,7 @@ function loadKalender(datum){
             maxTime: '21:00:00',
             slotLabelFormat: 'H:mm',
             timeFormat: 'H:mm',
-            eventRender: function(event, element) {
+            eventRender: function (event, element) {
                 element.qtip({
                     position: {
                         my: 'center center',  // Position my top left...
@@ -237,13 +232,7 @@ function loadKalender(datum){
         $('#calendar_panel').hide();
     }
 }
-
-
-
-
-
-
-function deleteCookie(){
-    $.cookie("beruf_id", null, { path: '/' });
-    $.cookie("klasse_id", null, { path: '/' });
+function deleteCookie() {
+    $.cookie("beruf_id", null, {path: '/'});
+    $.cookie("klasse_id", null, {path: '/'});
 }
