@@ -37,14 +37,17 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
-                <li class="active"><a href="./">Delete Cookies <span class="sr-only">(current)</span></a></li>
+                <li><a href="#deleteCookie" id="deleteCookie" class="hidden"><img src="../pic/cookie.ico"> Delete
+                    Cookies <span class="sr-only">(current)</span></a></li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
 </nav>
 <div class="container">
     <div class="panel panel-default">
-        <div class="panel-heading" id="filter_head">Filter</div>
+        <div class="panel-heading" id="filter_head"><span class="glyphicon glyphicon-calendar"></span> Please Klick on
+            Me
+        </div>
         <div class="panel-body" id="filter_body">
             <div id="beruf_div">
                 <label for="beruf">Profession</label>
@@ -75,9 +78,9 @@
             <div class="row">
                 <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-8 col-xs-offset-2">
                     <div class="btn-group">
-                        <button class="btn btn-xs btn-primary" id="calendar_prev"><< Zur&uuml;ck</button>
-                        <button class="btn btn-xs btn-default" id="calendar_today">Aktuelle Woche</button>
-                        <button class="btn btn-xs btn-primary" id="calendar_next">Weiter >></button>
+                        <button class="btn btn-xs btn-primary" id="calendar_prev"><< Back</button>
+                        <button class="btn btn-xs btn-default" id="calendar_today">Current Week</button>
+                        <button class="btn btn-xs btn-primary" id="calendar_next">Next >></button>
                     </div>
                 </div>
             </div>
@@ -90,7 +93,7 @@
 </div> <!-- /container -->
 <footer>
     <div class="center-block">
-        <p class="text-muted text-center">GIBM-Schedule - by <a href=""></a>Martin Jeremias Künzler &copy; IGE 13 B</p>
+        <p class="text-muted text-center">GIBM-Schedule - by <a href="#"></a>Martin Jeremias Künzler &copy; IGE 13 B</p>
     </div>
 </footer>
 <!-- Bootstrap core JavaScript
@@ -106,30 +109,29 @@
     var datum = null;
     $(document).ready(function () {
 
-
-        // Berufe laden
+        // Alle Berufe von der Webseite werden druch diese Funktion geladen
         loadBerufe();
 
         // Klassen laden, wenn Beruf geändert wurde
-        $('#beruf').change(function(){
+        $('#beruf').change(function () {
             loadKlassen();
         });
         // Klassen laden, wenn Beruf geändert wurde
-        $('#klasse').change(function(){
+        $('#klasse').change(function () {
             klasseSelected(datum);
         });
 
-        $('#calendar_next').click(function() {
+        $('#calendar_next').click(function () {
             $('#calendar').fullCalendar('next');
         });
-        $('#calendar_today').click(function() {
+        $('#calendar_today').click(function () {
             $('#calendar').fullCalendar('today');
         });
-        $('#calendar_prev').click(function() {
+        $('#calendar_prev').click(function () {
             $('#calendar').fullCalendar('prev');
         });
 
-        $('#filter_head').click(function(){
+        $('#filter_head').click(function () {
             $('#filter_body').toggle();
         });
     });

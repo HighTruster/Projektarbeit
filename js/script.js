@@ -32,7 +32,7 @@ function loadBerufe() {
 
     $('#beruf').append($('<option/>', {
         value: '',
-        text: "Bitte Auswählen"
+        text: "Please Select"
     }));
     $.getJSON('http://home.gibm.ch/interfaces/133/berufe.php', null, function (response) {
 
@@ -80,7 +80,7 @@ function loadKlassen() {
         //console.log(true);
         $('#klasse').append($('<option/>', {
             value: '',
-            text: "Bitte Auswählen"
+            text: "Please Select"
         }));
         $.getJSON('http://home.gibm.ch/interfaces/133/klassen.php', 'beruf_id=' + id, function (response) {
 
@@ -116,4 +116,134 @@ function loadKlassen() {
         //console.log(false);
         $('#klasse_div').hide();
     }
+}
+function showScheduler() {
+    var date, weekday, time_von, zeit_bis, lehrer, fach, raum, kommentar, timeDiff, calTitle;
+}
+
+function klasseSelected(datum){
+    document.cookie="klasse_id="+$('#klasse').val();
+    $('#deleteCookie').removeClass("hidden");
+    $('#kalender_head').html('Scheduler from the class - '+$("#klasse>option:selected").html());
+    loadKalender(datum);
+    $('#filter_body').hide();
+}
+
+function loadKalender(datum){
+    var date, weekday, time_from, time_until, teacher, subject, place, coment, timeDiff, SchedulerTitle;
+
+    if($('#klasse').val() >= 0 && $('#klasse').val() != ""){
+        $('#calendar_panel').show();
+        $('#calendar').fullCalendar({
+            lang: 'en',
+            header: false,
+            events: function(start, end, timezone, callback) {
+                $.ajax({
+                    url: 'http://home.gibm.ch/interfaces/133/tafel.php',
+                    dataType: 'jsonp',
+                    data: {
+                        klasse_id: $('#class').val(),
+                        woche: start.isoWeek()+'-'+start.year()
+                    },
+                    success: function(response) {
+                        var events = [];
+                        $.each(response,function(i,j){
+                            date = null;
+                            weekday = null;
+                            time_from = null;
+                            time_until = null;
+                            teacher = null;
+                            subject = null;
+                            place = null;
+                            coment = null;
+                            timeDiff = null;
+
+                            $.each(j,function(k,l){
+                                $.each(l,function(key,val){
+                                    switch(key){
+                                        case 'tafel_datum':
+                                            date = val;
+                                            break;
+
+                                        case 'tafel_wochentag':
+                                            wochentag = val;
+                                            break;
+
+                                        case 'tafel_von':
+                                            time_from = val;
+                                            break;
+
+                                        case 'tafel_bis':
+                                            time_until = val;
+                                            break;
+
+                                        case 'tafel_lehrer':
+                                            teacher = val;
+                                            break;
+
+                                        case 'tafel_longfach':
+                                            subject = val;
+                                            break;
+
+                                        case 'tafel_raum':
+                                            place = val;
+                                            break;
+
+                                        case 'tafel_kommentar':
+                                            coment = val;
+                                            break;
+                                    }
+                                });
+
+                                timeDiff = Math.abs(new Date("01/01/1970 " + time_from).getTime()/1000/60 - new Date("01/01/1970 " + time_until).getTime()/1000/60);
+
+                                events.push({
+                                    title: subject+(timeDiff > 45 ? "\r\n"+teacher+"\r\n"+place : ""),
+                                    start: date+"T"+time_from,
+                                    end: date+"T"+time_until,
+                                    description: subject+"<br />"+teacher+"<br />"+place+(coment != "" ? "<br /><br /><em>"+coment+"</em>" : "")
+                                });
+                            });
+                        });
+                        callback(events);
+                    }
+                });
+            },
+            weekNumbers: true,
+            allDaySlot: false,
+            weekends: false, // will hide Saturdays and Sundays
+            defaultView: 'agendaWeek',
+            contentHeight: 'auto',
+            minTime: '07:00:00',
+            maxTime: '21:00:00',
+            slotLabelFormat: 'H:mm',
+            timeFormat: 'H:mm',
+            eventRender: function(event, element) {
+                element.qtip({
+                    position: {
+                        my: 'center center',  // Position my top left...
+                        at: 'bottom center' // at the bottom right of...
+                    },
+                    content: event.description
+                    //style: {
+                    //    classes: 'qtip-youtube'
+                    //}
+                });
+            }
+        });
+        $('#calendar').fullCalendar('refetchEvents');
+    } else {
+        //console.log(false);
+        $('#calendar_panel').hide();
+    }
+}
+
+
+
+
+
+
+function deleteCookie(){
+    $.cookie("beruf_id", null, { path: '/' });
+    $.cookie("klasse_id", null, { path: '/' });
 }
