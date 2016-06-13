@@ -31,6 +31,6 @@ Siehe oben.
 ### Mobile Ansicht
 ----------------------
 Wollen Sie die Webapplikation in einer Mobilen-Ansicht testen? 
-Hierfür haben Sie 2 verschiedene Möglichkeiten.
-1. Gehen Sie mit Ihrem Mobilen Gerät auf die folgende URL: [m133.kuenzlersolutions.com/html](m133.kuenzlersolutions.com/html)
+Hierfür haben Sie 2 verschiedene Möglichkeiten.  
+1. Gehen Sie mit Ihrem Mobilen Gerät auf die folgende URL: [m133.kuenzlersolutions.com/html](m133.kuenzlersolutions.com/html)  
 2. Verwenden Sie im Google Chrome die Möglichkeit eine Mobile Ansicht zu erstellen (Untersuchen)
