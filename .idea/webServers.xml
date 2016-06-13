@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="7df78bd1-7ab5-4c9e-b46e-7671ef5e6b89" name="kuenzlersolutions" url="http://kuenzlersolutions.com">
+        <fileTransfer host="kuenzlersolutions.com" port="21" username="mkuenzler_mkuenzler">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

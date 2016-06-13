@@ -3,14 +3,16 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
+    <meta name="description" content="GIBM-Scheduler">
     <meta name="author" content="Martin Künzler">
     <link rel="icon" href="../pic/calendar.ico">
     <title>GIBM-Schedule</title>
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <link href="../css/fullcalendar.css" rel="stylesheet">
+
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]>
     <script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -20,7 +22,10 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <script src="../js/jquery.cookie.js"></script>
+    <script src="../js/jquery.qtip.min.js"></script>
     <link href="../css/navbar-fixed-top.css" rel="stylesheet">
+    <link href="../css/stylesheet.css" rel="stylesheet">
 </head>
 <body>
 <nav class="navbar navbar-default navbar-fixed-top">
@@ -33,7 +38,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="../html/index.html">Schedule</a>
+            <a class="navbar-brand" href="../html/index.html" title="Homepage for GIBM Scheduler">Schedule</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
@@ -45,7 +50,8 @@
 </nav>
 <div class="container">
     <div class="panel panel-default">
-        <div class="panel-heading" id="filter_head"><span class="glyphicon glyphicon-calendar"></span> Please Klick on
+        <div class="panel-heading" id="filter_head"><span class="glyphicon glyphicon-calendar"
+                                                          title="Select the options"></span> Please Klick on
             Me
         </div>
         <div class="panel-body" id="filter_body">
@@ -92,7 +98,8 @@
 </div> <!-- /container -->
 <footer>
     <div class="center-block">
-        <p class="text-muted text-center">GIBM-Schedule - by <a href="#"></a>Martin Jeremias Künzler &copy; IGE 13 B</p>
+        <p class="text-muted text-center">GIBM-Schedule - by <i title="Developer of this Scheduler">Martin Jeremias
+            Künzler</i> &copy; IGE 13 B</p>
     </div>
 </footer>
 <!-- Bootstrap core JavaScript
@@ -103,12 +110,22 @@
 <script src="../js/bootstrap.min.js"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="../js/ie10-viewport-bug-workaround.js"></script>
+<script src="../js/jquery.cookie.js"></script>
+<script src="../js/moment.min.js"></script>
+<script src="../js/jquery.qtip.min.js"></script>
+<script src="../js/fullcalendar.min.js"></script>
+<script src="../js/lang-all.js"></script>
 <script src="../js/script.js"></script>
-<script src="../js/fullcalendar.js"></script>
+
+
 <script type="text/javascript">
     var datum = null;
     $(document).ready(function () {
 
+        $('#deleteCookie').click(function () {
+            deleteCookie();
+            location.reload();
+        })
         // Alle Berufe von der Webseite werden druch diese Funktion geladen
         loadBerufe();
 
@@ -120,16 +137,22 @@
         $('#klasse').change(function () {
             klasseSelected(datum);
         });
-
+        /**
+         * Mittels der eingebunden Libarie von Fullcalender.io
+         * können die folgenden Funktionen aufgerufen werden.
+         * Diese ermöglichen es den Benutzern sich in der
+         */
         $('#calendar_next').click(function () {
             $('#calendar').fullCalendar('next');
         });
+
         $('#calendar_today').click(function () {
             $('#calendar').fullCalendar('today');
         });
         $('#calendar_prev').click(function () {
             $('#calendar').fullCalendar('prev');
         });
+
         $('#filter_head').click(function () {
             $('#filter_body').toggle();
         });

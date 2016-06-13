@@ -1,35 +1,44 @@
-/**
- * Created by MartinKuenzler on 22.05.16.
- * This is an file to script
- * we want to create an schedule for every class.
- *
- * We can bring the informations from the websites to our webapplication
- * and show this for every person, that has access to the link or URL.
- */
 //Cookie laden
-var coockiesSafe = document.cookie.split('; ');
-var coockies = new Array(null, null);
-$.each(coockiesSafe, function (k, speicherKeks) {
+var speicherKekse = document.cookie.split('; ');
+var kekse = new Array(null, null);
+
+
+$.each(speicherKekse, function (k, speicherKeks) {
     var keks = speicherKeks.split('=');
     switch (keks[0]) {
         case 'beruf_id':
-            coockies[0] = keks[1];
+            kekse[0] = keks[1];
             break;
         case 'klasse_id':
-            coockies[1] = keks[1];
+            kekse[1] = keks[1];
             break;
     }
 });
-console.log('KEKS0: ' + coockies[0]);
-if (coockies[0] !== null && coockies[0] != "null") {
-    $('#deleteCookie').removeClass("hidden");
-}
+//console.log('KEKS0: ' + kekse[1]);
+
+
+
+/**
+ * Die Funktion loadBerufe
+ * bezieht von der URL: http://home.gibm.ch/interfaces/133/berufe.php
+ * Ein JSON Format mit allen eingespeicherten Berufen, welche in der
+ * Berufsschule GIBM unterrichtet werden. Dies bedeutet, dass die
+ * Berufsmaturklassen sowie alle KTSI-Lehränge aufgelistet werden können
+ *
+ * Zudem wird in die ID-Beruf eine Auswahl der Klassen in der Form eines
+ * Dropdown-Menüs eingespeichert.
+ *
+ * Dadurch kann der Benutzer sich durch die Berufe wählen und den gewünschten
+ * Beruf auswählen.
+ *
+ *
+ */
 function loadBerufe() {
     var beruf_id, beruf_name;
 
     $('#beruf').append($('<option/>', {
         value: '',
-        text: "Please Select"
+        text: "Please select your profession"
     }));
     $.getJSON('http://home.gibm.ch/interfaces/133/berufe.php', null, function (response) {
 
@@ -37,7 +46,7 @@ function loadBerufe() {
             beruf_id = null;
             beruf_name = null;
 
-            // Daten verarbeiten
+
             $.each(j, function (key, val) {
                 if (key == "beruf_id") {
                     beruf_id = val;
@@ -46,7 +55,6 @@ function loadBerufe() {
                 }
             });
 
-            // Option im Select anhängen
             $('#beruf').append($('<option/>', {
                 value: beruf_id,
                 text: beruf_name
@@ -54,17 +62,20 @@ function loadBerufe() {
         });
         $('#beruf').show();
         $('#beruf_loading').hide();
-        if (!isNaN(coockies[0])) {
-            $('#beruf').val(coockies[0]);
-            loadKlassen();
+        if (!isNaN(kekse[0])) {
+            $('#beruf').val(kekse[0]);
+            loadKlassen(); // Es wird die Funktion loadKlassen aufgerufen.
         }
     });
 }
+/**
+ * Mit der loadKlassen Funktion können wir
+ */
 function loadKlassen() {
     var changeBeruf = false;
     var klasse_id, klasse_name;
     var id = $('#beruf').val();
-    if (isNaN(coockies[0]) || coockies[0] != id) {
+    if (isNaN(kekse[0]) || kekse[0] != id) {
         document.cookie = 'klasse_id=';
         $('#klasse').empty();
         $('#klasse').hide();
@@ -77,7 +88,7 @@ function loadKlassen() {
         //console.log(true);
         $('#klasse').append($('<option/>', {
             value: '',
-            text: "Please Select"
+            text: "Please select your class"
         }));
         $.getJSON('http://home.gibm.ch/interfaces/133/klassen.php', 'beruf_id=' + id, function (response) {
 
@@ -103,8 +114,8 @@ function loadKlassen() {
             });
             $('#klasse_loading').hide();
             $('#klasse').show();
-            if (!isNaN(coockies[1]) && !changeBeruf) {
-                $('#klasse').val(coockies[1]);
+            if (!isNaN(kekse[1]) && !changeBeruf) {
+                $('#klasse').val(kekse[1]);
                 klasseSelected(null);
             }
         });
@@ -114,15 +125,15 @@ function loadKlassen() {
         $('#klasse_div').hide();
     }
 }
+
 function klasseSelected(datum) {
     document.cookie = "klasse_id=" + $('#klasse').val();
     $('#deleteCookie').removeClass("hidden");
-    $('#kalender_head').html('Scheduler from the class - ' + $("#klasse>option:selected").html());
+    $('#kalender_head').html('Scheduler form  - ' + $("#klasse>option:selected").html());
     loadKalender(datum);
-
     $('#filter_body').hide();
-
 }
+
 
 function loadKalender(datum) {
     var datum, wochentag, zeit_von, zeit_bis, lehrer, fach, raum, kommentar, timeDiff, calTitle;
@@ -131,7 +142,7 @@ function loadKalender(datum) {
         $('#calendar_panel').show();
         $('#calendar').fullCalendar({
             // put your options and callbacks here
-            lang: 'en',
+            lang: 'de',
             header: false,
             events: function (start, end, timezone, callback) {
                 $.ajax({
@@ -207,35 +218,41 @@ function loadKalender(datum) {
                 });
             },
             weekNumbers: true,
-            allDaySlot: false,
-            weekends: false, // will hide Saturdays and Sundays
+            allDaySlot: true,
+            weekends: true,
             defaultView: 'agendaWeek',
             contentHeight: 'auto',
             minTime: '07:00:00',
             maxTime: '21:00:00',
-            slotLabelFormat: 'H:mm',
-            timeFormat: 'H:mm',
-            eventRender: function (event, element) {
+            slotLabelFormat: 'HH:mm',
+            timeFormat: 'HH:mm',
+          /*  eventRender: function (event, element) {
                 element.qtip({
                     position: {
-                        my: 'center center',  // Position my top left...
-                        at: 'bottom center' // at the bottom right of...
+                        my: 'center center',
+                        at: 'bottom center'
                     },
                     content: event.description
-                    //style: {
-                    //    classes: 'qtip-youtube'
-                    //}
                 });
-            }
+            }*/
         });
         $('#calendar').fullCalendar('refetchEvents');
-
     } else {
         //console.log(false);
         $('#calendar_panel').hide();
     }
 }
+
+/**
+ * deleteCookie
+ * Wird dazu verwendet, die Cookies der Webseite zu löschen
+ * dies geschieht so, das der Pfad aufgerufen wird und mit leeren Zeichen
+ * gefült wird
+ * Beispiel: beruf_id = 1
+ * nach dieser Funktion ist beruf_id = " "
+ * genau so wir dies für die klasse_id durchgeführt.
+ */
 function deleteCookie() {
-    $.cookie("beruf_id", null, {path: '/'});
-    $.cookie("klasse_id", null, {path: '/'});
+    $.cookie("beruf_id", "", {path: '/html'});
+    $.cookie("klasse_id", "", {path: '/html'});
 }
