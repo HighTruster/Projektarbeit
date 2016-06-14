@@ -8,11 +8,10 @@
     <meta name="description" content="GIBM-Scheduler">
     <meta name="author" content="Martin Künzler">
     <link rel="icon" href="../pic/calendar.ico">
-    <title>GIBM-Schedule</title>
+    <title>GIBM-Schedule | Martin Künzler</title>
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/ie10-viewport-bug-workaround.css" rel="stylesheet">
     <link href="../css/fullcalendar.css" rel="stylesheet">
-
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]>
     <script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -38,21 +37,29 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="../html/index.html" title="Homepage for GIBM Scheduler">Schedule</a>
+            <a class="navbar-brand" href="../html/index.html" title="Homepage for GIBM Scheduler">
+                Schedule
+            </a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#deleteCookie" id="deleteCookie" class="hidden"><img src="../pic/cookie.ico"> Delete
-                    Cookies <span class="sr-only">(current)</span></a></li>
+                <li>
+                    <a href="#deleteCookie" id="deleteCookie" class="hidden">
+                        <img src="../pic/cookie.ico"> Delete Cookies
+                        <span class="sr-only">
+                            (current)
+                        </span>
+                    </a>
+                </li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
 </nav>
 <div class="container">
     <div class="panel panel-default">
-        <div class="panel-heading" id="filter_head"><span class="glyphicon glyphicon-calendar"
-                                                          title="Select the options"></span> Please Klick on
-            Me
+        <div class="panel-heading" id="filter_head">
+            <span class="glyphicon glyphicon-calendar" title="Select the options">
+            </span> Please Klick on Me
         </div>
         <div class="panel-body" id="filter_body">
             <div id="beruf_div">
@@ -71,14 +78,17 @@
                 </select>
                 <div id="klasse_loading">
                     <div class="progress progress-striped active">
-                        <div class="progress-bar" style="width: 100%"></div>
+                        <div class="progress-bar" style="width: 100%">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <div id="calendar_panel" class="panel panel-primary" style="display:none;">
-        <div class="panel-heading" id="kalender_head">Schedule</div>
+        <div class="panel-heading" id="kalender_head">
+            Schedule
+        </div>
         <div class="panel-body" id="calendar_body">
             <div class="row">
                 <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-8 col-xs-offset-2">
@@ -89,7 +99,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="row">
                 <div id='calendar'></div>
             </div>
@@ -98,8 +107,12 @@
 </div> <!-- /container -->
 <footer>
     <div class="center-block">
-        <p class="text-muted text-center">GIBM-Schedule - by <i title="Developer of this Scheduler">Martin Jeremias
-            Künzler</i> &copy; IGE 13 B</p>
+        <p class="text-muted text-center">GIBM-Schedule - by
+            <i title="Developer of this Scheduler">
+                Martin Jeremias Künzler
+            </i>
+            &copy; IGE 13 B
+        </p>
     </div>
 </footer>
 <!-- Bootstrap core JavaScript
@@ -115,44 +128,69 @@
 <script src="../js/jquery.qtip.min.js"></script>
 <script src="../js/fullcalendar.min.js"></script>
 <script src="../js/lang-all.js"></script>
-<script src="../js/script.js"></script>
-
-
+<script src="../js/script.min.js"></script>
+<!-- Einbindung des Javascripts -->
 <script type="text/javascript">
+    /**
+     *  wir erstellen in diesem Moment eine Variable mit dem Namen Datum
+     *  und dem Wert NULL
+     */
     var datum = null;
+    // die folgende Funktionen werden erst nach dem Laden der Seite ausgeführt
     $(document).ready(function () {
-
+        //
         $('#deleteCookie').click(function () {
             deleteCookie();
             location.reload();
         })
         // Alle Berufe von der Webseite werden druch diese Funktion geladen
         loadBerufe();
-
         // Klassen laden, wenn Beruf geändert wurde
         $('#beruf').change(function () {
-            loadKlassen();
+            loadClass();
         });
         // Klassen laden, wenn Beruf geändert wurde
         $('#klasse').change(function () {
-            klasseSelected(datum);
+            classSelected(datum);
         });
         /**
          * Mittels der eingebunden Libarie von Fullcalender.io
          * können die folgenden Funktionen aufgerufen werden.
-         * Diese ermöglichen es den Benutzern sich in der
+         * Diese ermöglichen es den Benutzern sich in den Wochen zu navigieren
+         * Kommen wir zur folgenden Funktion:
+         * Diese ermöglicht es mit dem Übergabewert "next" die zukünftigen
+         * Wochen anzuzeigen
          */
         $('#calendar_next').click(function () {
             $('#calendar').fullCalendar('next');
         });
-
+        /**
+         * Mittels der eingebunden Libarie von Fullcalender.io
+         * können die folgenden Funktionen aufgerufen werden.
+         * Diese ermöglichen es den Benutzern sich in den Wochen zu navigieren
+         * Kommen wir zur folgenden Funktion:
+         * Diese ermöglicht es mit dem Übergabewert "today" die aktuelle Woche
+         * anzuzeigen
+         */
         $('#calendar_today').click(function () {
             $('#calendar').fullCalendar('today');
         });
+        /**
+         * Mittels der eingebunden Libarie von Fullcalender.io
+         * können die folgenden Funktionen aufgerufen werden.
+         * Diese ermöglichen es den Benutzern sich in den Wochen zu navigieren
+         * Kommen wir zur folgenden Funktion:
+         * Diese ermöglicht es mit dem Übergabewert "prev" die vergangenen
+         * Wochen anzuzeigen
+         */
         $('#calendar_prev').click(function () {
             $('#calendar').fullCalendar('prev');
         });
-
+        /**
+         * Mittels der eingebunden Libarie von Fullcalender.io
+         * können die folgenden Funktionen aufgerufen werden.
+         * Wir erhalten die Möglichkeit den Filter zu verschtecken.
+         */
         $('#filter_head').click(function () {
             $('#filter_body').toggle();
         });
